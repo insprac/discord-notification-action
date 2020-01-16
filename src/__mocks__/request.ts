@@ -14,7 +14,7 @@ export async function request(
   url: string,
   options: RequestOptions,
 ): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
+  return new Promise<string>((resolve) => {
     setTimeout(() => {
       resolve(JSON.stringify({method, url, options}));
     });

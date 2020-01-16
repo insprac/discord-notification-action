@@ -73,16 +73,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
-const wait_1 = __webpack_require__(521);
+const discord_1 = __webpack_require__(478);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const ms = core.getInput("milliseconds");
-            core.debug(`Waiting ${ms} milliseconds ...`);
-            core.debug(new Date().toTimeString());
-            yield wait_1.wait(parseInt(ms, 10));
-            core.debug(new Date().toTimeString());
-            core.setOutput("time", new Date().toTimeString());
+            const webhookURL = core.getInput("webhook-url");
+            const title = core.getInput("title");
+            const message = core.getInput("message");
+            const url = core.getInput("url");
+            const color = core.getInput("color");
+            const response = yield discord_1.webhook(webhookURL, { title, message, url, color });
+            core.debug(JSON.stringify(response, null, 2));
         }
         catch (error) {
             core.setFailed(error.message);
@@ -91,6 +92,13 @@ function run() {
 }
 run();
 
+
+/***/ }),
+
+/***/ 211:
+/***/ (function(module) {
+
+module.exports = require("https");
 
 /***/ }),
 
@@ -369,8 +377,8 @@ exports.getState = getState;
 
 /***/ }),
 
-/***/ 521:
-/***/ (function(__unusedmodule, exports) {
+/***/ 478:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
 
 "use strict";
 
@@ -384,17 +392,45 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-function wait(milliseconds) {
+const request_1 = __webpack_require__(820);
+function webhook(webhookURL, options) {
     return __awaiter(this, void 0, void 0, function* () {
-        return new Promise((resolve) => {
-            if (isNaN(milliseconds)) {
-                throw new Error("milliseconds not a number");
-            }
-            setTimeout(() => resolve("done!"), milliseconds);
-        });
+        return request_1.request("post", webhookURL, {
+            headers: { "Content-Type": "application/json" },
+            body: {
+                embeds: [
+                    {
+                        title: options.title,
+                        description: options.message,
+                        url: options.url,
+                        color: parseColor(options.color),
+                    },
+                ],
+            },
+        }).then((data) => JSON.parse(data));
     });
 }
-exports.wait = wait;
+exports.webhook = webhook;
+function parseColor(value) {
+    if (value) {
+        switch (typeof value) {
+            case "number":
+                return value;
+            case "string":
+                if (new RegExp(/^#[0-9a-fA-F]{6}$/).test(value)) {
+                    return parseInt(value.replace("#", "0x"));
+                }
+                else {
+                    return parseInt(value);
+                }
+            default:
+                return null;
+        }
+    }
+    else {
+        return null;
+    }
+}
 
 
 /***/ }),
@@ -403,6 +439,59 @@ exports.wait = wait;
 /***/ (function(module) {
 
 module.exports = require("path");
+
+/***/ }),
+
+/***/ 820:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const https_1 = __importDefault(__webpack_require__(211));
+function request(method, url, options) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((resolve, reject) => {
+            const requestOptions = {
+                method: method,
+                headers: options.headers || {},
+            };
+            const req = https_1.default.request(url, requestOptions, (res) => {
+                let responseData = "";
+                res.on("data", (chunk) => {
+                    responseData += chunk;
+                });
+                res.on("end", () => {
+                    resolve(responseData);
+                });
+            });
+            if (options.body) {
+                if (typeof options.body === "object") {
+                    req.write(JSON.stringify(options.body));
+                }
+                else {
+                    req.write(options.body);
+                }
+            }
+            req.on("error", reject);
+            req.end();
+        });
+    });
+}
+exports.request = request;
+
 
 /***/ })
 

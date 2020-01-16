@@ -29,7 +29,7 @@ export async function webhook(
 
 function parseColor(value: string | number | undefined): number | null {
   if (value) {
-    switch(typeof value) {
+    switch (typeof value) {
       case "number":
         return value;
       case "string":

@@ -18,8 +18,12 @@ export async function request(
 
     const req = https.request(url, requestOptions, (res) => {
       let responseData = "";
-      res.on("data", (chunk: string) => { responseData += chunk; });
-      res.on("end", () => { resolve(responseData); });
+      res.on("data", (chunk: string) => {
+        responseData += chunk;
+      });
+      res.on("end", () => {
+        resolve(responseData);
+      });
     });
 
     if (options.body) {

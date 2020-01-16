@@ -10,7 +10,7 @@ async function run(): Promise<void> {
     const color: string | number | undefined = core.getInput("color");
 
     const response = await webhook(webhookURL, {title, message, url, color});
-    core.debug(JSON.stringify(response, true, 2));
+    core.debug(JSON.stringify(response, null, 2));
   } catch (error) {
     core.setFailed(error.message);
   }
