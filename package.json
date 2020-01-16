@@ -1,6 +1,6 @@
 {
   "name": "discord-notification-action",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "GitHub Action for sending a Discord notification using webhooks",
   "main": "lib/main.js",
   "scripts": {

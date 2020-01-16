@@ -25,7 +25,7 @@ jobs:
     - uses: ./
       with:
         webhook-url: ${{ secrets.TEST_WEBHOOK_URL }}
-        title: New Action update
+        title: ${{ github.ref }}
         message: "version: ${{ steps.version.outputs.ACTION_VERSION }}"
         url: https://github.com/insprac/discord-notification-action
         color: "#75c22d"
