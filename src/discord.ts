@@ -24,7 +24,16 @@ export async function webhook(
         },
       ],
     },
-  }).then((data: string) => JSON.parse(data));
+  }).then((data: string) => {
+    try {
+      return JSON.parse(data);
+    } catch(error) {
+      return {
+        error: error.message,
+        data: data,
+      };
+    }
+  });
 }
 
 function parseColor(value: string | number | undefined): number | null {
