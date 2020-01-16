@@ -19,5 +19,5 @@ jobs:
         title: Example Title
         message: Example message.
         color: "#b8b8b8"
-        url: "https://github.com/insprac/discord-notification-action
+        url: https://github.com/insprac/discord-notification-action
 ```
