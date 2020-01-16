@@ -21,7 +21,7 @@ jobs:
       id: version
       run: |
         export ACTION_VERSION=`awk -F'"' '/version/ { print $4 }' package.json`
-        echo "::set-output name=APP_VERSION::$ACTION_VERSION"
+        echo "::set-output name=ACTION_VERSION::$ACTION_VERSION"
     - uses: ./
       with:
         webhook-url: ${{ secrets.TEST_WEBHOOK_URL }}
