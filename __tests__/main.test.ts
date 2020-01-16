@@ -1,27 +1,35 @@
-import {wait} from '../src/wait'
-import * as process from 'process'
-import * as cp from 'child_process'
-import * as path from 'path'
+import {webhook} from "../src/discord";
 
-test('throws invalid number', async () => {
-  const input = parseInt('foo', 10)
-  await expect(wait(input)).rejects.toThrow('milliseconds not a number')
-})
+jest.mock("../src/request");
 
-test('wait 500 ms', async () => {
-  const start = new Date()
-  await wait(500)
-  const end = new Date()
-  var delta = Math.abs(end.getTime() - start.getTime())
-  expect(delta).toBeGreaterThan(450)
-})
+test("sends notification", async () => {
+  const url = "https://discordapp.com/api/webhooks/test_id";
+  const response = await webhook(url, {
+    title: "Test Notification",
+    message: "Some message.",
+    color: "14704671",
+    url: "https://example.nz",
+  }) as any;
+  expect(response.url).toEqual(url);
+  expect(response.method).toEqual("post");
+  expect(response.options).toEqual({
+    headers: {"Content-Type": "application/json"},
+    body: {
+      embeds: [
+        {
+          title: "Test Notification",
+          description: "Some message.",
+          color: 14704671,
+          url: "https://example.nz",
+        },
+      ],
+    },
+  });
+});
 
-// shows how the runner will run a javascript action with env / stdout protocol
-test('test runs', () => {
-  process.env['INPUT_MILLISECONDS'] = '500'
-  const ip = path.join(__dirname, '..', 'lib', 'main.js')
-  const options: cp.ExecSyncOptions = {
-    env: process.env
-  }
-  console.log(cp.execSync(`node ${ip}`, options).toString())
-})
+test("formats hex color", async () => {
+  const response = await webhook("https://test.nz", {
+    color: "#FFFFFF",
+  }) as any;
+  expect(response.options.body.embeds[0].color).toEqual(16777215);
+});

@@ -1,19 +1,19 @@
-import * as core from '@actions/core'
-import {wait} from './wait'
+import * as core from "@actions/core";
+import {webhook} from "./discord";
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`)
+    const webhookURL: string = core.getInput("webhook-url");
+    const title: string | undefined = core.getInput("title");
+    const message: string | undefined = core.getInput("message");
+    const url: string | undefined = core.getInput("url");
+    const color: string | number | undefined = core.getInput("color");
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    core.setOutput('time', new Date().toTimeString())
+    const response = await webhook(webhookURL, {title, message, url, color});
+    core.debug(JSON.stringify(response, true, 2));
   } catch (error) {
-    core.setFailed(error.message)
+    core.setFailed(error.message);
   }
 }
 
-run()
+run();

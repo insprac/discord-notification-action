@@ -1,8 +1,7 @@
 {
-  "name": "typescript-action",
-  "version": "0.0.0",
-  "private": true,
-  "description": "TypeScript template action",
+  "name": "discord-notification-action",
+  "version": "0.1.0",
+  "description": "GitHub Action for sending a Discord notification using webhooks",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -15,14 +14,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/insprac/discord-notification-action.git"
   },
   "keywords": [
     "actions",
-    "node",
-    "setup"
+    "discord"
   ],
-  "author": "YourNameOrOrganization",
+  "author": "insprac",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.0"
