@@ -27,7 +27,7 @@ export async function webhook(
   }).then((data: string) => {
     try {
       return JSON.parse(data);
-    } catch(error) {
+    } catch (error) {
       return {
         error: error.message,
         data: data,

@@ -9,8 +9,7 @@ async function run(): Promise<void> {
     const url: string | undefined = core.getInput("url");
     const color: string | number | undefined = core.getInput("color");
 
-    const response = await webhook(webhookURL, {title, message, url, color});
-    core.debug(JSON.stringify(response, null, 2));
+    await webhook(webhookURL, {title, message, url, color});
   } catch (error) {
     core.setFailed(error.message);
   }

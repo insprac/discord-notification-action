@@ -82,8 +82,7 @@ function run() {
             const message = core.getInput("message");
             const url = core.getInput("url");
             const color = core.getInput("color");
-            const response = yield discord_1.webhook(webhookURL, { title, message, url, color });
-            core.debug(JSON.stringify(response, null, 2));
+            yield discord_1.webhook(webhookURL, { title, message, url, color });
         }
         catch (error) {
             core.setFailed(error.message);
@@ -407,7 +406,17 @@ function webhook(webhookURL, options) {
                     },
                 ],
             },
-        }).then((data) => JSON.parse(data));
+        }).then((data) => {
+            try {
+                return JSON.parse(data);
+            }
+            catch (error) {
+                return {
+                    error: error.message,
+                    data: data,
+                };
+            }
+        });
     });
 }
 exports.webhook = webhook;
